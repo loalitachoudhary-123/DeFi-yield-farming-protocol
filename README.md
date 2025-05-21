@@ -44,6 +44,7 @@ License
 MIT
 
 Contract address: 0x5D2e12d93EA2Bf5E3dDEa0f0cB721a93820deD82
-![Screenshot 2025-05-21 183646](https://github.com/user-attachments/assets/08d60b7f-7521-4aa9-9921-697211ee2699)
+![Screenshot 2025-05-21 183819](https://github.com/user-attachments/assets/7329ff2d-5d93-44d5-810e-1fe43b98b203)
+
 
 
