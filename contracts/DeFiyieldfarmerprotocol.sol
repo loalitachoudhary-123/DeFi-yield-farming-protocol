@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 /**
- * @title Project
+ * @title Projec
  * @dev A DeFi yield farming contract where users can stake tokens and earn rewards
  */
 contract Project is Ownable, ReentrancyGuard {
