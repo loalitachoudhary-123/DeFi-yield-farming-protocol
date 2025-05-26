@@ -40,7 +40,7 @@ contract Project is Ownable, ReentrancyGuard {
             rewardPerTokenStored = rewardPerToken();
             lastUpdateTime = block.timestamp;
             if (account != address(0)) {
-                rewards[account] = earned(account);
+                rewards[account] = earned(account)
                 userRewardPerTokenPaid[account] = rewardPerTokenStored;
             }
         }
