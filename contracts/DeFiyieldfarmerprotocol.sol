@@ -19,8 +19,7 @@ contract Project is Ownable, ReentrancyGuard {
 
     mapping(address => uint256) public userStakedBalance;
     mapping(address => uint256) public userRewardPerTokenPaid;
-    mapping(address => uint256) public rewards;
-
+    mapping(address => uint256) public 
     event Staked(address indexed user, uint256 amount);
     event Withdrawn(address indexed user, uint256 amount);
     event RewardClaimed(address indexed user, uint256 reward);
