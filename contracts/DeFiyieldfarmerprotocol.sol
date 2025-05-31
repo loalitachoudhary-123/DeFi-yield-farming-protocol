@@ -1,17 +1,15 @@
-/ SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-
- */
 contract Project is Ownable, ReentrancyGuard {
     IERC20 public stakingToken;
     IERC20 public rewardToken;
 
-    uint256 public rewardRate = 0.01 ether
+    uint256 public rewardRate = 0.01 ether;
     uint256 public lastUpdateTime;
     uint256 public rewardPerTokenStored;
     uint256 public totalStaked;
@@ -19,7 +17,8 @@ contract Project is Ownable, ReentrancyGuard {
 
     mapping(address => uint256) public userStakedBalance;
     mapping(address => uint256) public userRewardPerTokenPaid;
-    mapping(address => uint256) public 
+    mapping(address => uint256) public rewards;
+
     event Staked(address indexed user, uint256 amount);
     event Withdrawn(address indexed user, uint256 amount);
     event RewardClaimed(address indexed user, uint256 reward);
@@ -30,7 +29,7 @@ contract Project is Ownable, ReentrancyGuard {
     event RecoveredTokens(address token, uint256 amount);
     event RewardsPaused(bool status);
 
-    constructor() Ownable(msg.sender) {
+    constructor() {
         lastUpdateTime = block.timestamp;
     }
 
@@ -39,7 +38,7 @@ contract Project is Ownable, ReentrancyGuard {
             rewardPerTokenStored = rewardPerToken();
             lastUpdateTime = block.timestamp;
             if (account != address(0)) {
-                rewards[account] = earned(account)
+                rewards[account] = earned(account);
                 userRewardPerTokenPaid[account] = rewardPerTokenStored;
             }
         }
@@ -60,16 +59,15 @@ contract Project is Ownable, ReentrancyGuard {
 
     function rewardPerToken() public view returns (uint256) {
         if (totalStaked == 0) return rewardPerTokenStored;
-        return rewardPerTokenStored + (
-            ((block.timestamp - lastUpdateTime) * rewardRate * 1e18) / totalStaked
-        );
+        return rewardPerTokenStored + 
+            ((block.timestamp - lastUpdateTime) * rewardRate * 1e18) / totalStaked;
     }
 
     function earned(address account) public view returns (uint256) {
-        return (
+        return
             (userStakedBalance[account] * 
                 (rewardPerToken() - userRewardPerTokenPaid[account])) / 1e18
-        ) + rewards[account];
+            + rewards[account];
     }
 
     function stake(uint256 amount) external nonReentrant updateReward(msg.sender) {
@@ -101,6 +99,7 @@ contract Project is Ownable, ReentrancyGuard {
 
     function claimReward() external nonReentrant updateReward(msg.sender) {
         require(address(rewardToken) != address(0), "Reward token not set");
+
         uint256 reward = rewards[msg.sender];
         if (reward > 0) {
             rewards[msg.sender] = 0;
@@ -115,7 +114,7 @@ contract Project is Ownable, ReentrancyGuard {
         emit RewardRateUpdated(_rewardRate);
     }
 
-    // 🔒 NEW FUNCTION 1: Emergency withdraw without rewards
+    // 🔒 Emergency withdraw without rewards
     function emergencyWithdraw() external nonReentrant {
         uint256 amount = userStakedBalance[msg.sender];
         require(amount > 0, "Nothing to withdraw");
@@ -130,7 +129,7 @@ contract Project is Ownable, ReentrancyGuard {
         emit EmergencyWithdraw(msg.sender, amount);
     }
 
-    // 🧾 NEW FUNCTION 2: View user's info
+    // 🧾 View user's staked amount and pending rewards
     function getUserInfo(address user) external view returns (
         uint256 stakedAmount,
         uint256 pendingReward
@@ -139,21 +138,23 @@ contract Project is Ownable, ReentrancyGuard {
         pendingReward = earned(user);
     }
 
-    // 💰 NEW FUNCTION 3: Total rewards available in contract
+    // 💰 Total rewards available in contract
     function getTotalRewardsAvailable() external view returns (uint256) {
         return rewardToken.balanceOf(address(this));
     }
 
-    // ⚠️ NEW FUNCTION 4: Recover accidentally sent tokens
+    // ⚠️ Recover accidentally sent tokens except staking and reward tokens
     function recoverERC20(address tokenAddress, uint256 amount) external onlyOwner {
         require(tokenAddress != address(stakingToken), "Cannot recover staking token");
         require(tokenAddress != address(rewardToken), "Cannot recover reward token");
 
-        IERC20(tokenAddress).transfer(msg.sender, amount);
+        bool success = IERC20(tokenAddress).transfer(msg.sender, amount);
+        require(success, "Token recovery failed");
+
         emit RecoveredTokens(tokenAddress, amount);
     }
 
-    // 🛑 NEW FUNCTION 5: Pause/Unpause rewards
+    // 🛑 Pause or unpause reward accumulation
     function pauseRewards(bool status) external onlyOwner updateReward(address(0)) {
         rewardsPaused = status;
         emit RewardsPaused(status);
