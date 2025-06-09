@@ -8,7 +8,6 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 contract Project is Ownable, ReentrancyGuard {
     IERC20 public stakingToken;
     IERC20 public rewardToken;
-
     uint256 public rewardRate = 0.01 ether;
     uint256 public lastUpdateTime;
     uint256 public rewardPerTokenStored;
