@@ -4,7 +4,6 @@ pragma solidity ^0.8.20;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-
 contract Project is Ownable, ReentrancyGuard {
     IERC20 public stakingToken;
     IERC20 public rewardToken;
@@ -13,7 +12,6 @@ contract Project is Ownable, ReentrancyGuard {
     uint256 public rewardPerTokenStored;
     uint256 public totalStaked;
     bool public rewardsPaused;
-
     mapping(address => uint256) public userStakedBalance;
     mapping(address => uint256) public userRewardPerTokenPaid;
     mapping(address => uint256) public rewards;
