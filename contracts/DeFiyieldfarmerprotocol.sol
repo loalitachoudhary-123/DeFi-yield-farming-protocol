@@ -111,7 +111,7 @@ contract Project is Ownable, ReentrancyGuard {
         emit RewardRateUpdated(_rewardRate);
     }
 
-    // 🔒 Emergency withdraw without rewards
+    // ? Emergency withdraw without rewards
     function emergencyWithdraw() external nonReentrant {
         uint256 amount = userStakedBalance[msg.sender];
         require(amount > 0, "Nothing to withdraw");
@@ -126,7 +126,7 @@ contract Project is Ownable, ReentrancyGuard {
         emit EmergencyWithdraw(msg.sender, amount);
     }
 
-    // 🧾 View user's staked amount and pending rewards
+    // ? View user's staked amount and pending rewards
     function getUserInfo(address user) external view returns (
         uint256 stakedAmount,
         uint256 pendingReward
@@ -135,12 +135,12 @@ contract Project is Ownable, ReentrancyGuard {
         pendingReward = earned(user);
     }
 
-    // 💰 Total rewards available in contract
+    // ? Total rewards available in contract
     function getTotalRewardsAvailable() external view returns (uint256) {
         return rewardToken.balanceOf(address(this));
     }
 
-    // ⚠️ Recover accidentally sent tokens except staking and reward tokens
+    // ?? Recover accidentally sent tokens except staking and reward tokens
     function recoverERC20(address tokenAddress, uint256 amount) external onlyOwner {
         require(tokenAddress != address(stakingToken), "Cannot recover staking token");
         require(tokenAddress != address(rewardToken), "Cannot recover reward token");
@@ -151,9 +151,12 @@ contract Project is Ownable, ReentrancyGuard {
         emit RecoveredTokens(tokenAddress, amount);
     }
 
-    // 🛑 Pause or unpause reward accumulation
+    // ? Pause or unpause reward accumulation
     function pauseRewards(bool status) external onlyOwner updateReward(address(0)) {
         rewardsPaused = status;
         emit RewardsPaused(status);
     }
 }
+// START
+Updated on 2025-10-19
+// END
